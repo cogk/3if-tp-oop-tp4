@@ -2,7 +2,7 @@ CC        = g++
 CFLAGS    = -ansi -pedantic -Wall -Werror -Wextra -std=c++11
 # ajout du flag -Wextra
 
-EXEC_NAME = exec
+EXEC_NAME = analog
 INCLUDES  =
 LIBS      =
 SRCS      = $(wildcard *.cpp)
