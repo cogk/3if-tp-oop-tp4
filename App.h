@@ -29,6 +29,21 @@ class App
 {
     //----------------------------------------------------------------- PUBLIC
 
+    struct Options
+    {
+        std::string inputFilename = "";
+
+        std::string outputDotFilename = "";
+        bool shouldOutputDot = false;
+
+        bool shouldExcludeOthers = false;
+
+        unsigned int filterTime = 0;
+        bool shouldFilterByTime = false;
+
+        std::string serverReferer = "http://intranet-if.insa-lyon.fr";
+    };
+
 public:
     //----------------------------------------------------- Méthodes publiques
     // Mode d'emploi :
@@ -40,9 +55,22 @@ public:
     // La valeur de retour est soit 0 soit 1.
     int Run();
 
-    App(int argc, char *argv[]);
+    // renvoie status FAILURE ou SUCCESS
+    int ReadOptions(int argc, char const *argv[]);
+
+    void Debug();
+
+    App();
+
+    ~App();
+
+    //----------------------------------------------------- Méthodes protégées
+protected:
+    static void usage(const char *progName);
+    static int atoi(const char *str);
 
     //----------------------------------------------------- Attributs protégés
+    Options options;
 };
 
 //-------------------------------- Autres définitions dépendantes de <App>
