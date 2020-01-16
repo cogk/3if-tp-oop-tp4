@@ -17,7 +17,6 @@
 *.zip
 
 # Logs and databases
-*.log
 *.sql
 *.sqlite
 
@@ -30,10 +29,9 @@
 ehthumbs.db
 Thumbs.db
 
-Sujet.pdf
 analog
 doc/
 tmp/
 .vscode/
-catalogue.txt
-cat.txt
+
+anonyme.log
