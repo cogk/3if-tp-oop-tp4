@@ -1,7 +1,7 @@
 /*************************************************************************
                            App  -  description
                              -------------------
-    début                : 2019-11-19
+    début                : 2020-01-06
     copyright            : (C) 2019 FADILI Zineb & FORLER Corentin
     e-mail               : zineb.fadili@insa-lyon.fr
                            corentin.forler@insa-lyon.fr
@@ -15,11 +15,15 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <queue>
 #include <string>
 using namespace std;
 
 //------------------------------------------------------ Include personnel
 #include "App.h"
+#include "Cible.h"
+#include "Hit.h"
 
 //------------------------------------------------------------- Constantes
 
@@ -28,9 +32,55 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 int App::Run()
 {
-    cout << "Bienvenue dans l'application blabla !" << endl;
-    return 0;
+    cout << "All logs:" << endl;
+
+    ifstream logfile(options.inputFilename);
+    if (logfile.fail()) // si le fichier ne s'ouvre pas bien
+    {
+        cerr << "Erreur: impossible d'ouvrir le fichier d'entrée." << endl;
+        return EXIT_FAILURE;
+    }
+
+    readFromFile(logfile);
+
+    logfile.close();
+
+    return EXIT_SUCCESS;
 } //----- Fin de App::Run
+
+// méthode qui permet d'analyser le fichier
+void App::readFromFile(ifstream &logfile)
+{
+    const string LOCAL_ADDRESS = options.serverReferer;
+    Hit newHit;
+
+    // on ajoute les hits à notre priority queue
+    while (!logfile.eof())
+    {
+        logfile >> newHit; // lecture du hit grace à la surcharge d'opérateur >>
+                           //
+                           // il faut verifier si newHit.cible existe déjà dans le priority queue de cible, je ne sais pas comment faire? parce que qu'il faut comparer
+                           // newHit.cible avec Cible.nomCible, il faut comprarer les noms
+
+        // on enlève le début si c'est une adresse locale
+        // c'est à dire si l'adresse locale se trouve au début du referer
+        if (newHit.referer.find(LOCAL_ADDRESS) == 0)
+        {
+            // on retire l'adresse locale
+            newHit.referer = newHit.referer.substr(LOCAL_ADDRESS.length());
+        }
+
+        cout << "Hit " << newHit.hour << " " << newHit.referer << " -> " << newHit.cible << endl;
+
+        // Cible *cible = new Cible();
+        // cibles.push(cible);
+
+        // s'il existe, incrémenter son nombre de hits total
+        // et checker dans sa map si le referer existe déjà. s'il existe incrémenter le nombre lui correspondant, si le referer n'existe pas le incrémenter
+
+        // s'il n'existe pas, créer une nouvelle cible et l'ajouter a la priority queue
+    }
+}
 
 void App::usage(const char *progName)
 {
@@ -64,7 +114,7 @@ int App::atoi(const char *str)
     return num;
 }
 
-void App::Debug()
+void App::Debug() const
 {
     cout << "inputFilename:       " << options.inputFilename << endl;
 

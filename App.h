@@ -1,7 +1,7 @@
 /*************************************************************************
                            App  -  description
                              -------------------
-    début                : 2019-11-19
+    début                : 2020-01-06
     copyright            : (C) 2019 FADILI Zineb & FORLER Corentin
     e-mail               : zineb.fadili@insa-lyon.fr
                            corentin.forler@insa-lyon.fr
@@ -12,9 +12,14 @@
 #define APP_H
 
 //--------------------------------------------------- Interfaces utilisées
+#include <fstream>
 #include <iostream>
+#include <queue>
+#include <string>
+using namespace std;
 
 //------------------------------------------------------ Include personnel
+#include "Cible.h"
 
 //------------------------------------------------------------- Constantes
 
@@ -31,9 +36,9 @@ class App
 
     struct Options
     {
-        std::string inputFilename = "";
+        string inputFilename = "";
 
-        std::string outputDotFilename = "";
+        string outputDotFilename = "";
         bool shouldOutputDot = false;
 
         bool shouldExcludeOthers = false;
@@ -41,7 +46,7 @@ class App
         unsigned int filterTime = 0;
         bool shouldFilterByTime = false;
 
-        std::string serverReferer = "http://intranet-if.insa-lyon.fr";
+        string serverReferer = "http://intranet-if.insa-lyon.fr";
     };
 
 public:
@@ -58,7 +63,7 @@ public:
     // renvoie status FAILURE ou SUCCESS
     int ReadOptions(int argc, char const *argv[]);
 
-    void Debug();
+    void Debug() const;
 
     App();
 
@@ -69,8 +74,11 @@ protected:
     static void usage(const char *progName);
     static int atoi(const char *str);
 
+    void readFromFile(ifstream &logfile);
+
     //----------------------------------------------------- Attributs protégés
     Options options;
+    priority_queue<Cible *> cibles;
 };
 
 //-------------------------------- Autres définitions dépendantes de <App>

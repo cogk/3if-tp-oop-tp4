@@ -8,7 +8,6 @@ int main(int argc, char const *argv[])
     {
         return err1;
     }
-    app.Debug();
 
     const int err2 = app.Run();
     return err2;
