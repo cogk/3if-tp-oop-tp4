@@ -23,14 +23,31 @@ using namespace std;
 //----------------------------------------------------------------- PUBLIC
 
 //----------------------------------------------------- Méthodes publiques
-// type Cible::Méthode ( liste des paramètres )
+void Cible::Increment(string referer)
 // Algorithme :
 //
-//{
-//} //----- Fin de Méthode
+{
+    nbHits++;
+
+    CibleReferersMap::iterator it = referers.find(referer);
+    if (it != referers.end())
+    {
+        it->second++;
+    }
+    else
+    {
+        referers.insert(pair<string, unsigned int>(referer, 1));
+    }
+
+} //----- Fin de Increment
+
+unsigned int Cible::GetCount()
+{
+    return nbHits;
+}
 
 //------------------------------------------------- Surcharge d'opérateurs
-// Définition d'un opérateur de comparaison pour la priority_queue
+// Définition d'un opérateur de comparaison pour le tri
 // pour les ordonner selon le nombre de hits
 bool operator<(const Cible &cible1, const Cible &cible2)
 {
@@ -38,7 +55,7 @@ bool operator<(const Cible &cible1, const Cible &cible2)
 }
 
 //-------------------------------------------- Constructeurs - destructeur
-Cible::Cible()
+Cible::Cible(string cible) : nomCible(cible), nbHits(0), referers()
 // Algorithme :
 //
 {

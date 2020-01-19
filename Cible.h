@@ -14,10 +14,13 @@
 //--------------------------------------------------- Interfaces utilisées
 #include <map>
 #include <string>
+using namespace std;
 
 //------------------------------------------------------------- Constantes
 
 //------------------------------------------------------------------ Types
+
+typedef map<string, unsigned int> CibleReferersMap;
 
 //------------------------------------------------------------------------
 // Rôle de la classe <Cible>
@@ -28,16 +31,33 @@
 class Cible
 {
     //----------------------------------------------------------------- PUBLIC
-
-    std::string nomCible; // le nom de la cible
+public:
+    string nomCible; // le nom de la cible
 
     unsigned int nbHits; // le nombre de hits total vers la cible
 
-    std::map<std::string, unsigned int> referers; // une map qui prend le nom du referer et le nombre de hit vers la cible en question
+    CibleReferersMap referers; // une map qui prend le nom du referer et le nombre de hit vers la cible en question
 
-public:
     //----------------------------------------------------- Méthodes publiques
-    // type Méthode ( liste des paramètres );
+    void Increment(string referer);
+    // Mode d'emploi :
+    //
+    // Contrat :
+    //
+
+    unsigned int GetCount();
+    // Mode d'emploi :
+    //
+    // Contrat :
+    //
+
+    struct ComparePointers
+    {
+        bool operator()(const Cible *lhs, const Cible *rhs) const
+        {
+            return *lhs < *rhs;
+        }
+    };
     // Mode d'emploi :
     //
     // Contrat :
@@ -59,7 +79,7 @@ public:
     // On ne souhaite pas de constructeur de copie
     // car la copie en profondeur est très coûteuse.
 
-    Cible();
+    Cible(string nomCible);
     // Mode d'emploi :
     //
     // Contrat :
