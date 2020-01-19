@@ -14,7 +14,7 @@
 //--------------------------------------------------- Interfaces utilisées
 #include <fstream>
 #include <iostream>
-#include <queue>
+#include <map>
 #include <string>
 using namespace std;
 
@@ -24,6 +24,8 @@ using namespace std;
 //------------------------------------------------------------- Constantes
 
 //------------------------------------------------------------------ Types
+typedef std::map<string, Cible *> Cibles;
+typedef std::pair<string, Cible *> CiblesContainerPair;
 
 //------------------------------------------------------------------------
 // Rôle de la classe <App>
@@ -78,7 +80,7 @@ protected:
 
     //----------------------------------------------------- Attributs protégés
     Options options;
-    priority_queue<Cible *> cibles;
+    Cibles cibles;
 };
 
 //-------------------------------- Autres définitions dépendantes de <App>
