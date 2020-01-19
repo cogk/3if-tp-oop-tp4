@@ -33,8 +33,17 @@ using namespace std;
 ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 {
     string garbage; // on y stocke à chaque fois ce qu'on ne veut pas.
+    unHit.cible = "";
+    unHit.referer = "";
+    unHit.hour = "";
 
     getline(fichierLog, garbage, ':');
+    if (garbage == "")
+    {
+        // fin de fichier
+        return fichierLog;
+    }
+
     getline(fichierLog, unHit.hour, ':');
 
     getline(fichierLog, garbage, ' ');
