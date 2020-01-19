@@ -45,6 +45,44 @@ int App::Run()
 
     logfile.close();
 
+    // Cibles::const_iterator it = cibles.begin();
+    // Cibles::const_iterator end = cibles.end();
+    // while (it != end)
+    // {
+    //     cout << it->first << " " << it->second->GetCount() << " hits" << endl;
+    //     it++;
+    // }
+
+    // Il faudra remplacer cette méthode qui utilise une priority_queue
+    // par une autre, par exemple avec une classe "conteneur"
+    // appelée KBestQueue :
+    //   constructeur(unsigned int k), k le nombre de "meilleurs" éléments à conserver.
+    //   void Ajouter(int weight, T *value), weight est l'importance de l'élément value.
+    //   std::vector<T*> GetAllBest(), renvoie la liste triée des meilleurs éléments.
+
+    priority_queue<Cible *, std::vector<Cible *>, Cible::ComparePointers> q;
+    Cibles::const_iterator it = cibles.begin();
+    Cibles::const_iterator end = cibles.end();
+    while (it != end)
+    {
+        q.push(it->second);
+        it++;
+    }
+
+    const unsigned int N = 10; // nombre de cibles demandé
+    for (unsigned int i = 0; i < N; ++i)
+    {
+        Cible *cible = q.top();
+        cout << cible->nomCible << " " << cible->GetCount() << " hits" << endl;
+
+        q.pop();
+
+        if (q.empty())
+        {
+            break;
+        }
+    }
+
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
 
@@ -62,6 +100,11 @@ void App::readFromFile(ifstream &logfile)
                            // il faut verifier si newHit.cible existe déjà dans le priority queue de cible, je ne sais pas comment faire? parce que qu'il faut comparer
                            // newHit.cible avec Cible.nomCible, il faut comprarer les noms
 
+        if (logfile.eof())
+        {
+            break; // fin du fichier
+        }
+
         // on enlève le début si c'est une adresse locale
         // c'est à dire si l'adresse locale se trouve au début du referer
         if (newHit.referer.find(LOCAL_ADDRESS) == 0)
@@ -70,15 +113,26 @@ void App::readFromFile(ifstream &logfile)
             newHit.referer = newHit.referer.substr(LOCAL_ADDRESS.length());
         }
 
-        cout << "Hit " << newHit.hour << " " << newHit.referer << " -> " << newHit.cible << endl;
+        // cout << "Hit " << newHit.hour << " " << newHit.referer << " -> " << newHit.cible << endl;
 
-        // Cible *cible = new Cible();
-        // cibles.push(cible);
+        const string key = newHit.cible;
+        Cible *value;
 
-        // s'il existe, incrémenter son nombre de hits total
-        // et checker dans sa map si le referer existe déjà. s'il existe incrémenter le nombre lui correspondant, si le referer n'existe pas le incrémenter
+        Cibles::iterator oldCibleIt = cibles.find(key);
+        if (oldCibleIt != cibles.end())
+        {
+            // si la cible existe déjà, on l'incrémente
+            value = oldCibleIt->second;
+        }
+        else
+        {
+            value = new Cible(key);
+            cibles.insert(CiblesContainerPair(key, value));
+            // s'il n'existe pas, créer une nouvelle cible et l'ajouter a la map
+        }
 
-        // s'il n'existe pas, créer une nouvelle cible et l'ajouter a la priority queue
+        // on incrémente son nombre de hits total
+        value->Increment(newHit.referer);
     }
 }
 
