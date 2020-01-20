@@ -30,11 +30,11 @@ void Cible::Increment(string referer)
     nbHits++;
 
     CibleReferersMap::iterator it = referers.find(referer);
-    if (it != referers.end())
+    if (it != referers.end()) // si on n'est pas arrivé au bout c'est à dire le referer existe
     {
         it->second++;
     }
-    else
+    else // sinon on créer le referer
     {
         referers.insert(pair<string, unsigned int>(referer, 1));
     }

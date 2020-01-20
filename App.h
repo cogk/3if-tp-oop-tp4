@@ -23,9 +23,12 @@ using namespace std;
 
 //------------------------------------------------------------- Constantes
 
+#define NBCIBLES 10
+
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
 typedef std::pair<string, Cible *> CiblesContainerPair;
+
 
 //------------------------------------------------------------------------
 // Rôle de la classe <App>
@@ -36,20 +39,6 @@ class App
 {
     //----------------------------------------------------------------- PUBLIC
 
-    struct Options
-    {
-        string inputFilename = "";
-
-        string outputDotFilename = "";
-        bool shouldOutputDot = false;
-
-        bool shouldExcludeOthers = false;
-
-        unsigned int filterTime = 0;
-        bool shouldFilterByTime = false;
-
-        string serverReferer = "http://intranet-if.insa-lyon.fr";
-    };
 
 public:
     //----------------------------------------------------- Méthodes publiques
@@ -67,9 +56,25 @@ public:
 
     void Debug() const;
 
+    struct Options
+    {
+        string inputFilename = "";
+
+        string outputDotFilename = "";
+        bool shouldOutputDot = false;
+
+        bool shouldExcludeOthers = false;
+
+        unsigned int filterTime = 0;
+        bool shouldFilterByTime = false;
+
+        string serverReferer = "http://intranet-if.insa-lyon.fr";
+    };
+
     App();
 
     ~App();
+
 
     //----------------------------------------------------- Méthodes protégées
 protected:

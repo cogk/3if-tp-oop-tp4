@@ -58,6 +58,8 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
     // on ignore le reste de la ligne jusqu'à la fin de ligne
     getline(fichierLog, garbage);
 
+    //cout << "I read this hour : " << unHit.hour << " and this cible " << unHit.cible << "and this referer : " << unHit.referer << endl; READING OK EXCEPT OTHER LINE?
+
     return fichierLog;
 }
 

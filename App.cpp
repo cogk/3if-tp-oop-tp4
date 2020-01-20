@@ -32,7 +32,7 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 int App::Run()
 {
-    cout << "All logs:" << endl;
+    cout << "Top ten logs:" << endl;
 
     ifstream logfile(options.inputFilename);
     if (logfile.fail()) // si le fichier ne s'ouvre pas bien
@@ -60,7 +60,7 @@ int App::Run()
     //   void Ajouter(int weight, T *value), weight est l'importance de l'élément value.
     //   std::vector<T*> GetAllBest(), renvoie la liste triée des meilleurs éléments.
 
-    priority_queue<Cible *, std::vector<Cible *>, Cible::ComparePointers> q;
+  /*  priority_queue<Cible *, std::vector<Cible *>, Cible::ComparePointers> q;
     Cibles::const_iterator it = cibles.begin();
     Cibles::const_iterator end = cibles.end();
     while (it != end)
@@ -84,7 +84,42 @@ int App::Run()
     }
 
     return EXIT_SUCCESS;
-} //----- Fin de App::Run
+} //----- Fin de App::Run*/
+
+// une multimap pour permettre les doublons sur les nombres de hits qui est clé
+// on garde la fonction compare initiale, car elle permet de comparer les clés
+// on garde l'allocator, car on ne s'en sert pas
+   //std::multimap<unsigned int, Cible*> ciblesMap;
+
+   std::multimap<unsigned int, Cible*,std::greater<unsigned int>> ciblesMap;
+
+   Cibles::const_iterator it = cibles.begin();
+   Cibles::const_iterator end = cibles.end();
+   while (it != end)
+   {
+     // on insère la pair <nbHitsTotals, Pointeur vers la cible>
+       ciblesMap.insert(make_pair(it->second->nbHits,it->second));
+       it++;
+   }
+
+
+   std::multimap<unsigned int, Cible*>::iterator itMap = ciblesMap.begin();
+   std::multimap<unsigned int, Cible*>::iterator endMap = ciblesMap.end();
+
+// check obligatoire à ce que j'ai compris sinon undefined behavior....
+   if (distance(itMap, ciblesMap.end())>NBCIBLES) {
+     endMap = next(ciblesMap.begin(),NBCIBLES);
+   }
+
+   while(itMap != endMap) {
+     cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
+     itMap++;
+   }
+
+   return EXIT_SUCCESS;
+}
+
+
 
 // méthode qui permet d'analyser le fichier
 void App::readFromFile(ifstream &logfile)
@@ -122,7 +157,8 @@ void App::readFromFile(ifstream &logfile)
         if (oldCibleIt != cibles.end())
         {
             // si la cible existe déjà, on l'incrémente
-            value = oldCibleIt->second;
+          //  cout << "does exist" << endl;
+            value = oldCibleIt->second; // on récupère le pointeur vers la cible déjà existante
         }
         else
         {
@@ -133,6 +169,7 @@ void App::readFromFile(ifstream &logfile)
 
         // on incrémente son nombre de hits total
         value->Increment(newHit.referer);
+
     }
 }
 
