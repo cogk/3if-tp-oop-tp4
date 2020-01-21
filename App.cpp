@@ -62,6 +62,14 @@ int App::Run()
 
     ShowStatistics();
 
+    Cibles::iterator it = cibles.begin();
+    const Cibles::iterator end = cibles.end();
+    while (it != end)
+    {
+      delete it->second;
+      it++;
+    }
+
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
 
