@@ -45,81 +45,39 @@ int App::Run()
 
     logfile.close();
 
-    // Cibles::const_iterator it = cibles.begin();
-    // Cibles::const_iterator end = cibles.end();
-    // while (it != end)
-    // {
-    //     cout << it->first << " " << it->second->GetCount() << " hits" << endl;
-    //     it++;
-    // }
+    // une multimap pour permettre les doublons sur les nombres de hits qui est clé
+    // on garde la fonction compare initiale, car elle permet de comparer les clés
+    // on garde l'allocator, car on ne s'en sert pas
+    // std::multimap<unsigned int, Cible*> ciblesMap;
 
-    // Il faudra remplacer cette méthode qui utilise une priority_queue
-    // par une autre, par exemple avec une classe "conteneur"
-    // appelée KBestQueue :
-    //   constructeur(unsigned int k), k le nombre de "meilleurs" éléments à conserver.
-    //   void Ajouter(int weight, T *value), weight est l'importance de l'élément value.
-    //   std::vector<T*> GetAllBest(), renvoie la liste triée des meilleurs éléments.
+    std::multimap<unsigned int, Cible *, std::greater<unsigned int>> ciblesMap;
 
-  /*  priority_queue<Cible *, std::vector<Cible *>, Cible::ComparePointers> q;
     Cibles::const_iterator it = cibles.begin();
     Cibles::const_iterator end = cibles.end();
     while (it != end)
     {
-        q.push(it->second);
+        // on insère la pair <nbHitsTotals, Pointeur vers la cible>
+        ciblesMap.insert(make_pair(it->second->nbHits, it->second));
         it++;
     }
 
-    const unsigned int N = 10; // nombre de cibles demandé
-    for (unsigned int i = 0; i < N; ++i)
+    std::multimap<unsigned int, Cible *>::iterator itMap = ciblesMap.begin();
+    std::multimap<unsigned int, Cible *>::iterator endMap = ciblesMap.end();
+
+    // check obligatoire à ce que j'ai compris sinon undefined behavior....
+    if (distance(itMap, ciblesMap.end()) > options.topStatsCount)
     {
-        Cible *cible = q.top();
-        cout << cible->nomCible << " " << cible->GetCount() << " hits" << endl;
+        endMap = next(ciblesMap.begin(), options.topStatsCount);
+    }
 
-        q.pop();
-
-        if (q.empty())
-        {
-            break;
-        }
+    while (itMap != endMap)
+    {
+        cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
+        itMap++;
     }
 
     return EXIT_SUCCESS;
-} //----- Fin de App::Run*/
-
-// une multimap pour permettre les doublons sur les nombres de hits qui est clé
-// on garde la fonction compare initiale, car elle permet de comparer les clés
-// on garde l'allocator, car on ne s'en sert pas
-   //std::multimap<unsigned int, Cible*> ciblesMap;
-
-   std::multimap<unsigned int, Cible*,std::greater<unsigned int>> ciblesMap;
-
-   Cibles::const_iterator it = cibles.begin();
-   Cibles::const_iterator end = cibles.end();
-   while (it != end)
-   {
-     // on insère la pair <nbHitsTotals, Pointeur vers la cible>
-       ciblesMap.insert(make_pair(it->second->nbHits,it->second));
-       it++;
-   }
-
-
-   std::multimap<unsigned int, Cible*>::iterator itMap = ciblesMap.begin();
-   std::multimap<unsigned int, Cible*>::iterator endMap = ciblesMap.end();
-
-// check obligatoire à ce que j'ai compris sinon undefined behavior....
-   if (distance(itMap, ciblesMap.end())>NBCIBLES) {
-     endMap = next(ciblesMap.begin(),NBCIBLES);
-   }
-
-   while(itMap != endMap) {
-     cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
-     itMap++;
-   }
-
-   return EXIT_SUCCESS;
-}
-
-
+} //----- Fin de App::Run
 
 // méthode qui permet d'analyser le fichier
 void App::readFromFile(ifstream &logfile)
@@ -157,7 +115,7 @@ void App::readFromFile(ifstream &logfile)
         if (oldCibleIt != cibles.end())
         {
             // si la cible existe déjà, on l'incrémente
-          //  cout << "does exist" << endl;
+            //  cout << "does exist" << endl;
             value = oldCibleIt->second; // on récupère le pointeur vers la cible déjà existante
         }
         else
@@ -169,7 +127,6 @@ void App::readFromFile(ifstream &logfile)
 
         // on incrémente son nombre de hits total
         value->Increment(newHit.referer);
-
     }
 }
 
@@ -303,6 +260,13 @@ int App::ReadOptions(int argc, char const *argv[])
         }
 
         i++;
+    }
+
+    if (this->options.inputFilename == "") // si aucun fichier d'entrée n'est donné
+    {
+        cerr << "Erreur: argument manquant du nom de fichier d'entrée." << endl;
+        App::usage(progName);
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;

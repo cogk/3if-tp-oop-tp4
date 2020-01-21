@@ -23,12 +23,9 @@ using namespace std;
 
 //------------------------------------------------------------- Constantes
 
-#define NBCIBLES 10
-
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
 typedef std::pair<string, Cible *> CiblesContainerPair;
-
 
 //------------------------------------------------------------------------
 // Rôle de la classe <App>
@@ -38,7 +35,6 @@ typedef std::pair<string, Cible *> CiblesContainerPair;
 class App
 {
     //----------------------------------------------------------------- PUBLIC
-
 
 public:
     //----------------------------------------------------- Méthodes publiques
@@ -69,12 +65,13 @@ public:
         bool shouldFilterByTime = false;
 
         string serverReferer = "http://intranet-if.insa-lyon.fr";
+
+        unsigned int topStatsCount = 10;
     };
 
     App();
 
     ~App();
-
 
     //----------------------------------------------------- Méthodes protégées
 protected:
