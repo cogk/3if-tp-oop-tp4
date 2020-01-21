@@ -34,7 +34,7 @@ const string PROG_NAME = "analog";
 //----------------------------------------------------- Méthodes publiques
 int App::Run()
 {
-    cout << "Top ten logs:" << endl;
+  //  cout << "Top ten logs:" << endl;
 
     ifstream logfile(options.inputFilename);
     if (logfile.fail()) // si le fichier ne s'ouvre pas bien
@@ -47,8 +47,6 @@ int App::Run()
 
     logfile.close();
 
-    ShowStatistics();
-
     if (options.shouldOutputDot)
     {
         if (writeDotGraph() == EXIT_FAILURE)
@@ -56,6 +54,13 @@ int App::Run()
             return EXIT_FAILURE;
         }
     }
+
+    if (options.shouldFilterByTime)
+    {
+      cout << "Warning : only hits between " << options.filterTime << "h and " << (options.filterTime+1) <<"h have been taken into account" << endl;
+    }
+
+    ShowStatistics();
 
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
@@ -131,6 +136,7 @@ int App::writeDotGraph() const
 
     dotfile << "}" << endl;
 
+    cout << "Dot-file " << options.outputDotFilename << "generated" << endl;
     return EXIT_SUCCESS;
 }
 
@@ -163,7 +169,7 @@ void App::ShowStatistics() const
 
     while (itMap != endMap)
     {
-        cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
+        cout << itMap->second->nomCible << " " <<"(" << itMap->first << " hits)" << endl;
         itMap++;
     }
 }
