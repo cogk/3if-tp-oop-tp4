@@ -33,7 +33,7 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 int App::Run()
 {
-    cout << "Top ten logs:" << endl;
+  //  cout << "Top ten logs:" << endl;
 
     ifstream logfile(options.inputFilename);
     if (logfile.fail()) // si le fichier ne s'ouvre pas bien
@@ -46,8 +46,6 @@ int App::Run()
 
     logfile.close();
 
-    ShowStatistics();
-
     if (options.shouldOutputDot)
     {
         if (writeDotGraph() == EXIT_FAILURE)
@@ -55,6 +53,13 @@ int App::Run()
             return EXIT_FAILURE;
         }
     }
+
+    if (options.shouldFilterByTime)
+    {
+      cout << "Warning : only hits between " << options.filterTime << "h and " << (options.filterTime+1) <<"h have been taken into account" << endl;
+    }
+
+    ShowStatistics();
 
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
@@ -128,25 +133,9 @@ int App::writeDotGraph() const
         it++;
     }
 
-    // Cibles::const_iterator it3 = cibles.begin();
-    // const Cibles::const_iterator end3 = cibles.end();
-    // while (it3 != end3)
-    // {
-    //     const string nodeName = it3->first;
-    //     const CibleReferersMap hitrefs = it3->second->referers;
-
-    //     CibleReferersMap::const_iterator hit = hitrefs.begin();
-    //     const CibleReferersMap::const_iterator hitrefsEnd = hitrefs.end();
-    //     while (hit != hitrefsEnd)
-    //     {
-    //         dotfile << "link " << (hit->first) << " -> " << nodeName << " × " << hit->second << endl;
-    //         hit++;
-    //     }
-    //     it2++;
-    // }
-
     dotfile << "}" << endl;
 
+    cout << "Dot-file " << options.outputDotFilename << "generated" << endl;
     return EXIT_SUCCESS;
 }
 
@@ -179,7 +168,7 @@ void App::ShowStatistics() const
 
     while (itMap != endMap)
     {
-        cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
+        cout << itMap->second->nomCible << " " <<"(" << itMap->first << " hits)" << endl;
         itMap++;
     }
 }
