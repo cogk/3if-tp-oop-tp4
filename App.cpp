@@ -136,7 +136,7 @@ int App::writeDotGraph() const
 
     dotfile << "}" << endl;
 
-    cout << "Dot-file " << options.outputDotFilename << "generated" << endl;
+    cout << "Dot-file " << options.outputDotFilename << " generated" << endl;
     return EXIT_SUCCESS;
 }
 
@@ -217,8 +217,6 @@ void App::readFromFile(ifstream &logfile)
             newHit.referer = newHit.referer.substr(LOCAL_ADDRESS.length());
         }
 
-        // cout << "Hit " << newHit.hour << " " << newHit.referer << " -> " << newHit.cible << endl;
-
         const string key = newHit.cible;
         Cible *value;
 
@@ -226,7 +224,6 @@ void App::readFromFile(ifstream &logfile)
         if (oldCibleIt != cibles.end())
         {
             // si la cible existe déjà, on l'incrémente
-            //  cout << "does exist" << endl;
             value = oldCibleIt->second; // on récupère le pointeur vers la cible déjà existante
         }
         else
