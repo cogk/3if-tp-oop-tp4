@@ -34,7 +34,7 @@ const string PROG_NAME = "analog";
 //----------------------------------------------------- Méthodes publiques
 int App::Run()
 {
-  //  cout << "Top ten logs:" << endl;
+    //  cout << "Top ten logs:" << endl;
 
     ifstream logfile(options.inputFilename);
     if (logfile.fail()) // si le fichier ne s'ouvre pas bien
@@ -57,7 +57,7 @@ int App::Run()
 
     if (options.shouldFilterByTime)
     {
-      cout << "Warning : only hits between " << options.filterTime << "h and " << (options.filterTime+1) <<"h have been taken into account" << endl;
+        cout << "Warning: only hits between " << options.filterTime << "h and " << (options.filterTime + 1) << "h have been taken into account" << endl;
     }
 
     ShowStatistics();
@@ -169,7 +169,8 @@ void App::ShowStatistics() const
 
     while (itMap != endMap)
     {
-        cout << itMap->second->nomCible << " " <<"(" << itMap->first << " hits)" << endl;
+        cout << itMap->second->nomCible << " "
+             << "(" << itMap->first << " hits)" << endl;
         itMap++;
     }
 }

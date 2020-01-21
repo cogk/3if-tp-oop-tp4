@@ -16,8 +16,8 @@ using namespace std;
 #include <iostream>
 
 //------------------------------------------------------ Include personnel
-#include "Hit.h"
 #include "App.h"
+#include "Hit.h"
 
 //------------------------------------------------------------- Constantes
 
@@ -48,7 +48,7 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 
     getline(fichierLog, hourAsString, ':');
 
-    unHit.hour= (unsigned int) App::atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de atoi n'est pas -1
+    unHit.hour = (unsigned int)App::atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de atoi n'est pas -1
     // car on a verifie juste avant que la ligne n'est pas vide (dans la condition de vérification de garbage)
 
     getline(fichierLog, garbage, ' ');

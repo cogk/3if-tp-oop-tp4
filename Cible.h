@@ -51,7 +51,6 @@ public:
     // Contrat :
     //
 
-
     struct ComparePointers
     {
         bool operator()(const Cible *lhs, const Cible *rhs) const
