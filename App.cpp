@@ -45,6 +45,13 @@ int App::Run()
 
     logfile.close();
 
+    ShowStatistics();
+
+    return EXIT_SUCCESS;
+} //----- Fin de App::Run
+
+void App::ShowStatistics() const
+{
     // une multimap pour permettre les doublons sur les nombres de hits qui est clé
     // on garde la fonction compare initiale, car elle permet de comparer les clés
     // on garde l'allocator, car on ne s'en sert pas
@@ -75,9 +82,7 @@ int App::Run()
         cout << itMap->second->nomCible << " " << itMap->first << " hits" << endl;
         itMap++;
     }
-
-    return EXIT_SUCCESS;
-} //----- Fin de App::Run
+}
 
 // méthode qui permet d'analyser le fichier
 void App::readFromFile(ifstream &logfile)

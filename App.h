@@ -50,6 +50,8 @@ public:
     // renvoie status FAILURE ou SUCCESS
     int ReadOptions(int argc, char const *argv[]);
 
+    void ShowStatistics() const;
+
     void Debug() const;
 
     struct Options
