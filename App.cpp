@@ -81,10 +81,21 @@ int App::writeDotGraph() const
         const string cibleName = it->first;
         const CibleReferersMap refs = it->second->referers;
 
-        const string nodeName = "node" + std::to_string(nodeCount);
-        nodeCount++;
-        mapCibleToNodeName.insert(pair<string, string>(cibleName, nodeName));
-        dotfile << nodeName << "[label=\"" << cibleName << "\"];" << endl;
+        string nodeName1;
+
+        const NodeMap::const_iterator cibleToNodeName = mapCibleToNodeName.find(cibleName);
+        if (cibleToNodeName == mapCibleToNodeName.end())
+        {
+            // clé non-trouvée
+            nodeName1 = "node" + std::to_string(nodeCount);
+            nodeCount++;
+            mapCibleToNodeName.insert(pair<string, string>(cibleName, nodeName1));
+            dotfile << nodeName1 << " [label=\"" << cibleName << "\"];" << endl;
+        }
+        else
+        {
+            nodeName1 = cibleToNodeName->second;
+        }
 
         CibleReferersMap::const_iterator it2 = refs.begin();
         const CibleReferersMap::const_iterator end2 = refs.end();
@@ -104,16 +115,13 @@ int App::writeDotGraph() const
                 nodeCount++;
                 mapCibleToNodeName.insert(pair<string, string>(refName, nodeName2));
                 dotfile << nodeName2 << " [label=\"" << refName << "\"];" << endl;
-
-                it2++;
-                continue;
             }
             else
             {
                 nodeName2 = cibleToNodeName->second;
             }
 
-            dotfile << nodeName2 << " -> " << nodeName << "[label=\"" << count << "\"];" << endl;
+            dotfile << nodeName2 << " -> " << nodeName1 << " [label=\"" << count << "\"];" << endl;
             it2++;
         }
 
