@@ -12,13 +12,13 @@
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
+#include <array>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <queue>
 #include <string>
-#include <array>
 using namespace std;
 
 //------------------------------------------------------ Include personnel
@@ -48,8 +48,99 @@ int App::Run()
 
     ShowStatistics();
 
+    if (options.shouldOutputDot)
+    {
+        if (writeDotGraph() == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
+    }
+
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
+
+int App::writeDotGraph() const
+{
+    ofstream dotfile(options.outputDotFilename);
+    if (dotfile.fail()) // si le fichier ne s'ouvre pas bien
+    {
+        cerr << "Erreur: impossible d'ouvrir le fichier de sortie." << endl;
+        return EXIT_FAILURE;
+    }
+
+    dotfile << "digraph {" << endl;
+
+    unsigned int nodeCount = 0;
+    typedef map<string, string> NodeMap;
+    NodeMap mapCibleToNodeName;
+
+    Cibles::const_iterator it = cibles.begin();
+    const Cibles::const_iterator end = cibles.end();
+    while (it != end)
+    {
+        const string cibleName = it->first;
+        const CibleReferersMap refs = it->second->referers;
+
+        const string nodeName = "node" + std::to_string(nodeCount);
+        nodeCount++;
+        mapCibleToNodeName.insert(pair<string, string>(cibleName, nodeName));
+        dotfile << nodeName << "[label=\"" << cibleName << "\"];" << endl;
+
+        CibleReferersMap::const_iterator it2 = refs.begin();
+        const CibleReferersMap::const_iterator end2 = refs.end();
+        while (it2 != end2)
+        {
+            const string refName = it2->first;
+            const unsigned int count = it2->second;
+
+            string nodeName2;
+
+            const NodeMap::const_iterator cibleToNodeName = mapCibleToNodeName.find(refName);
+            if (cibleToNodeName == mapCibleToNodeName.end())
+            {
+                // clé non-trouvée
+
+                nodeName2 = "node" + std::to_string(nodeCount);
+                nodeCount++;
+                mapCibleToNodeName.insert(pair<string, string>(refName, nodeName2));
+                dotfile << nodeName2 << " [label=\"" << refName << "\"];" << endl;
+
+                it2++;
+                continue;
+            }
+            else
+            {
+                nodeName2 = cibleToNodeName->second;
+            }
+
+            dotfile << nodeName2 << " -> " << nodeName << "[label=\"" << count << "\"];" << endl;
+            it2++;
+        }
+
+        it++;
+    }
+
+    // Cibles::const_iterator it3 = cibles.begin();
+    // const Cibles::const_iterator end3 = cibles.end();
+    // while (it3 != end3)
+    // {
+    //     const string nodeName = it3->first;
+    //     const CibleReferersMap hitrefs = it3->second->referers;
+
+    //     CibleReferersMap::const_iterator hit = hitrefs.begin();
+    //     const CibleReferersMap::const_iterator hitrefsEnd = hitrefs.end();
+    //     while (hit != hitrefsEnd)
+    //     {
+    //         dotfile << "link " << (hit->first) << " -> " << nodeName << " × " << hit->second << endl;
+    //         hit++;
+    //     }
+    //     it2++;
+    // }
+
+    dotfile << "}" << endl;
+
+    return EXIT_SUCCESS;
+}
 
 void App::ShowStatistics() const
 {
@@ -99,25 +190,25 @@ void App::readFromFile(ifstream &logfile)
                            // il faut verifier si newHit.cible existe déjà dans le priority queue de cible, je ne sais pas comment faire? parce que qu'il faut comparer
                            // newHit.cible avec Cible.nomCible, il faut comprarer les noms
 
-        if ((newHit.referer=="")&&(newHit.cible=="")) // on vérifie la validité du hit
+        if ((newHit.referer == "") && (newHit.cible == "")) // on vérifie la validité du hit
         {
             break; // fin du fichier
         }
 
         if (options.shouldExcludeOthers)
         {
-          if(endsWith(newHit.referer)||endsWith(newHit.cible))
-          {
-            continue; // on n'ajout pas le hit si la cible ou le referer a pour extension celles refusées
-          }
+            if (endsWith(newHit.referer) || endsWith(newHit.cible))
+            {
+                continue; // on n'ajout pas le hit si la cible ou le referer a pour extension celles refusées
+            }
         }
 
-        if(options.shouldFilterByTime)
+        if (options.shouldFilterByTime)
         {
-          if(newHit.hour!=options.filterTime)
-          {
-            continue; // on n'ajoute pas le hit s'il a été effectué à une autre heureu que celle voulue
-          }
+            if (newHit.hour != options.filterTime)
+            {
+                continue; // on n'ajoute pas le hit s'il a été effectué à une autre heureu que celle voulue
+            }
         }
         // on enlève le début si c'est une adresse locale
         // c'est à dire si l'adresse locale se trouve au début du referer
@@ -151,15 +242,14 @@ void App::readFromFile(ifstream &logfile)
     }
 }
 
-
 bool App::endsWith(string toStudy)
 {
-  for (unsigned int i=0; i<extensions.size(); i++)
-  {
-    if(toStudy.find(extensions[i])==(toStudy.length()-extensions[i].length()))
-    return true;
-  }
-  return false;
+    for (unsigned int i = 0; i < extensions.size(); i++)
+    {
+        if (toStudy.find(extensions[i]) == (toStudy.length() - extensions[i].length()))
+            return true;
+    }
+    return false;
 }
 
 void App::usage(const char *progName)

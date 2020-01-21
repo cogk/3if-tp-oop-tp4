@@ -54,6 +54,8 @@ public:
 
     void ShowStatistics() const;
 
+    int writeDotGraph() const;
+
     void Debug() const;
 
     bool endsWith(string toStudy);
