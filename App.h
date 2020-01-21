@@ -23,7 +23,7 @@ using namespace std;
 #include "Cible.h"
 
 //------------------------------------------------------------- Constantes
-const std::vector<std::string> extensions={".jpg", ".png", ".css", ".js"};
+const std::vector<std::string> extensions = {".jpg", ".png", ".css", ".js"};
 
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
