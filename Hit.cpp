@@ -17,6 +17,7 @@ using namespace std;
 
 //------------------------------------------------------ Include personnel
 #include "Hit.h"
+#include "App.h"
 
 //------------------------------------------------------------- Constantes
 
@@ -33,9 +34,10 @@ using namespace std;
 ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 {
     string garbage; // on y stocke à chaque fois ce qu'on ne veut pas.
+    string hourAsString;
     unHit.cible = "";
     unHit.referer = "";
-    unHit.hour = "";
+    unHit.hour = 0;
 
     getline(fichierLog, garbage, ':');
     if (garbage == "")
@@ -44,7 +46,10 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
         return fichierLog;
     }
 
-    getline(fichierLog, unHit.hour, ':');
+    getline(fichierLog, hourAsString, ':');
+
+    unHit.hour= (unsigned int) App::atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de atoi n'est pas -1
+    // car on a verifie juste avant que la ligne n'est pas vide (dans la condition de vérification de garbage)
 
     getline(fichierLog, garbage, ' ');
     getline(fichierLog, garbage, ' ');

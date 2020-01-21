@@ -16,12 +16,14 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 using namespace std;
 
 //------------------------------------------------------ Include personnel
 #include "Cible.h"
 
 //------------------------------------------------------------- Constantes
+const std::vector<std::string> extensions={".jpg", ".png", ".css", ".js"};
 
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
@@ -52,6 +54,8 @@ public:
 
     void Debug() const;
 
+    bool endsWith(string toStudy);
+
     struct Options
     {
         string inputFilename = "";
@@ -69,6 +73,8 @@ public:
         unsigned int topStatsCount = 10;
     };
 
+    static int atoi(const char *str);
+
     App();
 
     ~App();
@@ -76,7 +82,6 @@ public:
     //----------------------------------------------------- Méthodes protégées
 protected:
     static void usage(const char *progName);
-    static int atoi(const char *str);
 
     void readFromFile(ifstream &logfile);
 

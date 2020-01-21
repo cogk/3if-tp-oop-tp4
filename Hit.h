@@ -32,7 +32,7 @@ class Hit
 public:
     std::string cible;
     std::string referer;
-    std::string hour;
+    unsigned int hour;
 
     //----------------------------------------------------- Méthodes publiques
     // type Méthode ( liste des paramètres );
