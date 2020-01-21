@@ -129,23 +129,6 @@ int App::writeDotGraph() const
         it++;
     }
 
-    // Cibles::const_iterator it3 = cibles.begin();
-    // const Cibles::const_iterator end3 = cibles.end();
-    // while (it3 != end3)
-    // {
-    //     const string nodeName = it3->first;
-    //     const CibleReferersMap hitrefs = it3->second->referers;
-
-    //     CibleReferersMap::const_iterator hit = hitrefs.begin();
-    //     const CibleReferersMap::const_iterator hitrefsEnd = hitrefs.end();
-    //     while (hit != hitrefsEnd)
-    //     {
-    //         dotfile << "link " << (hit->first) << " -> " << nodeName << " × " << hit->second << endl;
-    //         hit++;
-    //     }
-    //     it2++;
-    // }
-
     dotfile << "}" << endl;
 
     return EXIT_SUCCESS;
