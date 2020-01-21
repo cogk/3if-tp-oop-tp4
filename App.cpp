@@ -12,6 +12,7 @@
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
+#include <array>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -189,11 +190,26 @@ void App::readFromFile(ifstream &logfile)
                            // il faut verifier si newHit.cible existe déjà dans le priority queue de cible, je ne sais pas comment faire? parce que qu'il faut comparer
                            // newHit.cible avec Cible.nomCible, il faut comprarer les noms
 
-        if ((newHit.referer == "") && (newHit.referer == "") && (newHit.referer == "")) // on vérifie la validité du hit
+        if ((newHit.referer == "") && (newHit.cible == "")) // on vérifie la validité du hit
         {
             break; // fin du fichier
         }
 
+        if (options.shouldExcludeOthers)
+        {
+            if (endsWith(newHit.referer) || endsWith(newHit.cible))
+            {
+                continue; // on n'ajout pas le hit si la cible ou le referer a pour extension celles refusées
+            }
+        }
+
+        if (options.shouldFilterByTime)
+        {
+            if (newHit.hour != options.filterTime)
+            {
+                continue; // on n'ajoute pas le hit s'il a été effectué à une autre heureu que celle voulue
+            }
+        }
         // on enlève le début si c'est une adresse locale
         // c'est à dire si l'adresse locale se trouve au début du referer
         if (newHit.referer.find(LOCAL_ADDRESS) == 0)
@@ -224,6 +240,16 @@ void App::readFromFile(ifstream &logfile)
         // on incrémente son nombre de hits total
         value->Increment(newHit.referer);
     }
+}
+
+bool App::endsWith(string toStudy)
+{
+    for (unsigned int i = 0; i < extensions.size(); i++)
+    {
+        if (toStudy.find(extensions[i]) == (toStudy.length() - extensions[i].length()))
+            return true;
+    }
+    return false;
 }
 
 void App::usage(const char *progName)
