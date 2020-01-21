@@ -85,7 +85,7 @@ public:
 
     //----------------------------------------------------- Méthodes protégées
 protected:
-    static void usage(const char *progName);
+    static void usage();
 
     void readFromFile(ifstream &logfile);
 

@@ -27,6 +27,7 @@ using namespace std;
 #include "Hit.h"
 
 //------------------------------------------------------------- Constantes
+const string PROG_NAME = "analog";
 
 //----------------------------------------------------------------- PUBLIC
 
@@ -260,11 +261,9 @@ bool App::endsWith(string toStudy)
     return false;
 }
 
-void App::usage(const char *progName)
+void App::usage()
 {
-    cerr << "Usage: " << progName
-         << " [-e] [-t 0-23] [-g out.dot] [-R baseReferer] in.log"
-         << endl;
+    cerr << "Usage: " << PROG_NAME << " [-e] [-t 0-23] [-g out.dot] in.log" << endl;
 }
 
 int App::atoi(const char *str)
@@ -309,11 +308,9 @@ void App::Debug() const
 
 int App::ReadOptions(int argc, char const *argv[])
 {
-    const char *progName = argv[0];
-
     if (argc == 1)
     {
-        App::usage(progName);
+        App::usage();
         return EXIT_FAILURE;
     }
 
@@ -324,7 +321,7 @@ int App::ReadOptions(int argc, char const *argv[])
         {
             if (i == argc - 1)
             {
-                App::usage(progName);
+                App::usage();
                 return EXIT_FAILURE;
             }
 
@@ -343,7 +340,7 @@ int App::ReadOptions(int argc, char const *argv[])
         {
             if (i == argc - 1)
             {
-                App::usage(progName);
+                App::usage();
                 return EXIT_FAILURE;
             }
 
@@ -354,7 +351,7 @@ int App::ReadOptions(int argc, char const *argv[])
             {
                 cerr << "Erreur: paramètre ‘heure’ de l'option -t"
                      << " doit être un nombre entre 0 et 23 (bornes incluses)." << endl;
-                App::usage(progName);
+                App::usage();
                 return EXIT_FAILURE;
             }
 
@@ -373,7 +370,7 @@ int App::ReadOptions(int argc, char const *argv[])
             if (!strncmp(argv[i], "-", 1))
             {
                 cerr << "Erreur: option non reconnue ‘" << argv[i] << "’." << endl;
-                App::usage(progName);
+                App::usage();
                 return EXIT_FAILURE;
             }
             else if (this->options.inputFilename == "")
@@ -384,7 +381,7 @@ int App::ReadOptions(int argc, char const *argv[])
             else
             {
                 cerr << "Erreur: trop d'arguments." << endl;
-                App::usage(progName);
+                App::usage();
                 return EXIT_FAILURE;
             }
         }
@@ -395,7 +392,7 @@ int App::ReadOptions(int argc, char const *argv[])
     if (this->options.inputFilename == "") // si aucun fichier d'entrée n'est donné
     {
         cerr << "Erreur: argument manquant du nom de fichier d'entrée." << endl;
-        App::usage(progName);
+        App::usage();
         return EXIT_FAILURE;
     }
 
