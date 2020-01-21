@@ -98,7 +98,7 @@ void App::readFromFile(ifstream &logfile)
                            // il faut verifier si newHit.cible existe déjà dans le priority queue de cible, je ne sais pas comment faire? parce que qu'il faut comparer
                            // newHit.cible avec Cible.nomCible, il faut comprarer les noms
 
-        if (logfile.eof())
+        if ((newHit.referer=="")&&(newHit.referer=="")&&(newHit.referer=="")) // on vérifie la validité du hit
         {
             break; // fin du fichier
         }
