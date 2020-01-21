@@ -52,6 +52,8 @@ public:
 
     void ShowStatistics() const;
 
+    int writeDotGraph() const;
+
     void Debug() const;
 
     struct Options
