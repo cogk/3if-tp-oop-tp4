@@ -27,10 +27,13 @@ void Cible::Increment(string referer)
 // Algorithme :
 //
 {
-    nbHits++;
+  //on augmente le nombre de Hit total de la cible
+    nbHitsTotal++;
 
+    // on vérifie si le referer est déjà repertorié
     CibleReferersMap::iterator it = referers.find(referer);
-    if (it != referers.end()) // si on n'est pas arrivé au bout c'est à dire le referer existe
+    if (it != referers.end()) // si on n'est pas arrivé au bout c'est à dire le referer existe, on incrémente la liaison
+    //referer -> cible
     {
         it->second++;
     }
@@ -43,7 +46,7 @@ void Cible::Increment(string referer)
 
 unsigned int Cible::GetCount()
 {
-    return nbHits;
+    return nbHitsTotal;
 }
 
 //------------------------------------------------- Surcharge d'opérateurs
@@ -51,11 +54,11 @@ unsigned int Cible::GetCount()
 // pour les ordonner selon le nombre de hits
 bool operator<(const Cible &cible1, const Cible &cible2)
 {
-    return cible1.nbHits < cible2.nbHits;
+    return cible1.nbHitsTotal < cible2.nbHitsTotal;
 }
 
 //-------------------------------------------- Constructeurs - destructeur
-Cible::Cible(string cible) : nomCible(cible), nbHits(0), referers()
+Cible::Cible(string cible) : nomCible(cible), nbHitsTotal(0), referers()
 // Algorithme :
 //
 {

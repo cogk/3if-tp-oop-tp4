@@ -32,11 +32,6 @@ class Cible
 {
     //----------------------------------------------------------------- PUBLIC
 public:
-    string nomCible; // le nom de la cible
-
-    unsigned int nbHits; // le nombre de hits total vers la cible
-
-    CibleReferersMap referers; // une map qui prend le nom du referer et le nombre de hit vers la cible en question
 
     //----------------------------------------------------- Méthodes publiques
     void Increment(string referer);
@@ -62,7 +57,7 @@ public:
     //
     // Contrat :
     //
-
+    friend class App;
     //------------------------------------------------- Surcharge d'opérateurs
     Cible &operator=(const Cible &unCible) = delete;
     // On ne souhaite pas d'opérateur de copie
@@ -97,6 +92,12 @@ protected:
     //----------------------------------------------------- Méthodes protégées
 
     //----------------------------------------------------- Attributs protégés
+
+    string nomCible; // le nom de la cible
+
+    unsigned int nbHitsTotal; // le nombre de hits total vers la cible
+
+    CibleReferersMap referers; // une map qui prend le nom du referer et le nombre de hit vers la cible en question
 };
 
 //-------------------------------- Autres définitions dépendantes de <Cible>

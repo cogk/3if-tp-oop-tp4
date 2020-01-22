@@ -33,7 +33,7 @@ using namespace std;
 //------------------------------------------------- Surcharge d'opérateurs
 ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 {
-    string garbage; // on y stocke à chaque fois ce qu'on ne veut pas.
+    string garbage; // chaine de caractère qui stocke temporairement les inforamtions inutiles
     string hourAsString;
     unHit.cible = "";
     unHit.referer = "";
@@ -48,7 +48,7 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 
     getline(fichierLog, hourAsString, ':');
 
-    unHit.hour = (unsigned int)App::atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de atoi n'est pas -1
+    unHit.hour = (unsigned int)App::Atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de Atoi n'est pas -1
     // car on a verifie juste avant que la ligne n'est pas vide (dans la condition de vérification de garbage)
 
     getline(fichierLog, garbage, ' ');

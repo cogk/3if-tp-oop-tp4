@@ -23,7 +23,7 @@ using namespace std;
 #include "Cible.h"
 
 //------------------------------------------------------------- Constantes
-const std::vector<std::string> extensions = {".jpg", ".png", ".css", ".js"};
+const std::vector<std::string> extensions = {".jpg", ".png", ".bmp",".css", ".js"};
 
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
@@ -54,11 +54,9 @@ public:
 
     void ShowStatistics() const;
 
-    int writeDotGraph() const;
+    int WriteDotGraph() const;
 
-    void Debug() const;
-
-    bool endsWith(string toStudy);
+    bool EndsWith(string toStudy);
 
     struct Options
     {
@@ -77,21 +75,25 @@ public:
         unsigned int topStatsCount = 10;
     };
 
-    static int atoi(const char *str);
+    static int Atoi(const char *str);
 
     App();
 
     ~App();
 
-    //----------------------------------------------------- Méthodes protégées
 protected:
+    //----------------------------------------------------- Méthodes protégées
     static void usage();
+
+    void Debug() const;
 
     void readFromFile(ifstream &logfile);
 
     //----------------------------------------------------- Attributs protégés
     Options options;
     Cibles cibles;
+
+
 };
 
 //-------------------------------- Autres définitions dépendantes de <App>

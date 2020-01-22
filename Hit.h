@@ -30,9 +30,7 @@ class Hit
 {
     //----------------------------------------------------------------- PUBLIC
 public:
-    std::string cible;
-    std::string referer;
-    unsigned int hour;
+
 
     //----------------------------------------------------- Méthodes publiques
     // type Méthode ( liste des paramètres );
@@ -40,6 +38,7 @@ public:
     //
     // Contrat :
     //
+    friend class App;
 
     //------------------------------------------------- Surcharge d'opérateurs
     Hit &operator=(const Hit &unHit) = delete;
@@ -69,6 +68,10 @@ protected:
     //----------------------------------------------------- Méthodes protégées
 
     //----------------------------------------------------- Attributs protégés
+
+    std::string cible;
+    std::string referer;
+    unsigned int hour;
 };
 
 //-------------------------------- Autres définitions dépendantes de <Hit>
