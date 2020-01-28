@@ -68,8 +68,6 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 
 //-------------------------------------------- Constructeurs - destructeur
 Hit::Hit()
-// Algorithme :
-//
 {
 #ifdef MAP
     cout << "Appel au constructeur de <Hit>" << endl;
@@ -77,8 +75,6 @@ Hit::Hit()
 } //----- Fin de Hit
 
 Hit::~Hit()
-// Algorithme :
-//
 {
 #ifdef MAP
     cout << "Appel au destructeur de <Hit>" << endl;

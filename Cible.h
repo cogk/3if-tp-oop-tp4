@@ -2,8 +2,8 @@
                            Cible  -  description
                              -------------------
     début                : 2020-01-06
-    copyright            : (C) 2019 BERTHOMET Guillaume & FORLER Corentin
-    e-mail               : guillaume.berthomet@insa-lyon.fr
+    copyright            : (C) 2019 FADILI Zineb & FORLER Corentin
+    e-mail               : zineb.fadili@insa-lyon.fr
                            corentin.forler@insa-lyon.fr
 *************************************************************************/
 
@@ -24,26 +24,33 @@ typedef map<string, unsigned int> CibleReferersMap;
 
 //------------------------------------------------------------------------
 // Rôle de la classe <Cible>
-//
-//
+// Cette classe sert de conteneur pour mémoriser le nombre de hits de
+// chaque referer en direction d'une cible particulière.
+// Elle regroupe les informations d'un fichier accédé :
+// - nom du fichier
+// - referers : les origines des requêtes
+// - nombre de d'accès à ce fichier
 //------------------------------------------------------------------------
 
 class Cible
 {
     //----------------------------------------------------------------- PUBLIC
 public:
+    friend class App;
+
     //----------------------------------------------------- Méthodes publiques
     void Increment(string referer);
     // Mode d'emploi :
-    //
+    //   `referer` est le nom du referer associé à un hit en particulier.
     // Contrat :
-    //
+    // * Si le referer est déjà présent dans la CibleReferersMap, alors
+    //   la valeur associée à la clé `referer` est incrémentée.
+    // * Sinon, alors une nouvelle paire clé-valeur est ajoutée à la map
+    //   et contient la valeur 1.
 
     unsigned int GetCount();
     // Mode d'emploi :
-    //
-    // Contrat :
-    //
+    //   Accesseur de la variable privée nbHitsTotal.
 
     //------------------------------------------------- Surcharge d'opérateurs
     Cible &operator=(const Cible &unCible) = delete;
@@ -55,11 +62,8 @@ public:
     // On ne souhaite pas de constructeur de copie
     // car la copie en profondeur est très coûteuse.
 
-    Cible(string nomCible);
-    // Mode d'emploi :
-    //
+    Cible(string cible);
     // Contrat :
-    //
 
     virtual ~Cible();
     // Mode d'emploi :
@@ -78,7 +82,8 @@ protected:
 
     unsigned int nbHitsTotal; // le nombre de hits total vers la cible
 
-    CibleReferersMap referers; // une map qui prend le nom du referer et le nombre de hit vers la cible en question
+    // une map qui associe le nom du referer au nombre de hits vers la cible
+    CibleReferersMap referers;
 };
 
 //-------------------------------- Autres définitions dépendantes de <Cible>

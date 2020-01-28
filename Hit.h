@@ -22,15 +22,16 @@
 
 //------------------------------------------------------------------------
 // Rôle de la classe <Hit>
-//
-//
+// Cette classe sert de structure de donnée qui contient les informations
+// nécessaires à la représentation d'une ligne de fichier log.
+// Elle contient donc le nom du referer et de la cible, ainsi que l'heure
+// de l'accès à la ressource.
 //------------------------------------------------------------------------
 
 class Hit
 {
     //----------------------------------------------------------------- PUBLIC
 public:
-
     //----------------------------------------------------- Méthodes publiques
     // type Méthode ( liste des paramètres );
     // Mode d'emploi :
