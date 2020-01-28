@@ -23,6 +23,7 @@ using namespace std;
 #include "App.h"
 #include "Cible.h"
 #include "Hit.h"
+#include "Util.h"
 
 //------------------------------------------------------------- Constantes
 const string PROG_NAME = "analog"; // nom de l'executable
@@ -291,8 +292,8 @@ void App::readFromFile(ifstream &logfile)
             }
         }
 
-        // si l'adresse locale insa se trouve au début de referer on l'enleve
-        if (newHit.referer.find(LOCAL_ADDRESS) == 0)
+        // si l'adresse locale INSA se trouve au début de referer on l'enleve
+        if (Util::StartsWith(newHit.referer, LOCAL_ADDRESS))
         {
             // on retire l'adresse locale
             newHit.referer = newHit.referer.substr(LOCAL_ADDRESS.length());
@@ -301,7 +302,7 @@ void App::readFromFile(ifstream &logfile)
         const string key = newHit.cible;
         Cible *value;
 
-        //On vérifie si la cible existe déjà
+        // On vérifie si la cible existe déjà
         Cibles::iterator oldCibleIt = cibles.find(key);
         if (oldCibleIt != cibles.end())
         {
@@ -335,7 +336,7 @@ bool App::endsWithFilteredExtension(string filename) const
     const std::vector<std::string> exts = options.filteredExtensions;
     for (unsigned int i = 0; i < exts.size(); i++)
     {
-        if (filename.find(exts[i]) == (filename.length() - exts[i].length()))
+        if (Util::EndsWith(filename, exts[i]))
         {
             return true;
         }
@@ -347,45 +348,6 @@ void App::usage()
 // Affiche le message d'usage
 {
     cerr << "Usage: " << PROG_NAME << " [-e] [-t 0-23] [-g out.dot] in.log" << endl;
-}
-
-int App::atoi(const char *str)
-// Algorithme :
-// (Méthode peu robuste pour convertir char* en entier.)
-// SORTIE : l'entier N, positif ou nul si la conversion est réussie.
-//          sinon -1 en cas d'erreur
-// Pour chaque caractère C de la chaîne de caractère
-//      Si C n'est pas un chiffre, on retourne -1 (fin de la boucle et de la fonction).
-//
-//      Donner à X la valeur entière entre 0 et 9 associée au caractère C
-//        où '0' => 0, ..., '9' => 9 (abstrait, concrètement on utilise
-//        les valeurs ASCII des caractères).
-//      Donner à N la valeur N * 10 + X
-// Fin Pour
-// Renvoyer N (il n'y a pas eu de valeur invalide)
-{
-    // la méthode convertie une chaine de caractère en entier qu'elle retourne
-    int num = 0;
-
-    if (str[0] == '\0')
-    {
-        return -1; // chaîne vide en paramètre
-    }
-
-    for (unsigned int i = 0; str[i] != 0; i++)
-    {
-        char c = str[i];
-        if (c >= '0' && c <= '9')
-        {
-            num = num * 10 + (c - '0');
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    return num;
 }
 
 int App::readOptions(int argc, char const *argv[])
@@ -431,7 +393,7 @@ int App::readOptions(int argc, char const *argv[])
 
             // On ignore les options répétées, seule la dernière valeur est prise en compte.
             i++;
-            int hour = App::atoi(argv[i]);
+            int hour = Util::Atoi(argv[i]);
             if (hour > 23 || hour < 0)
             {
                 cerr << "Erreur: paramètre ‘heure’ de l'option -t"

@@ -59,12 +59,6 @@ protected:
     static void usage();
 
     // Mode d'emploi :
-    // Analyse une chaine de caractères et retourne la valeur numérique
-    // du nombre entier positif qui s'y trouve potentiellemnt.
-    // Retourne -1 si la chaine n'est pas dans le bon format.
-    static int atoi(const char *str);
-
-    // Mode d'emploi :
     // Lit les hits du fichier {options.inputFilename}
     // dans la map Cibles.
     void readFromFile(ifstream &logfile);
