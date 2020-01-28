@@ -32,7 +32,6 @@ class Cible
 {
     //----------------------------------------------------------------- PUBLIC
 public:
-
     //----------------------------------------------------- Méthodes publiques
     void Increment(string referer);
     // Mode d'emploi :

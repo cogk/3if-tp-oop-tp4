@@ -13,10 +13,10 @@
 
 //-------------------------------------------------------- Include système
 using namespace std;
+#include <cstdlib>
 #include <iostream>
 
 //------------------------------------------------------ Include personnel
-#include "App.h"
 #include "Hit.h"
 
 //------------------------------------------------------------- Constantes
@@ -24,14 +24,10 @@ using namespace std;
 //----------------------------------------------------------------- PUBLIC
 
 //----------------------------------------------------- Méthodes publiques
-// type Hit::Méthode ( liste des paramètres )
-// Algorithme :
-//
-//{
-//} //----- Fin de Méthode
 
 //------------------------------------------------- Surcharge d'opérateurs
 ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
+// Lecture séquentielle des différentes parties d'une ligne du fichier log
 {
     string garbage; // chaine de caractère qui stocke temporairement les inforamtions inutiles
     string hourAsString;
@@ -40,6 +36,8 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
     unHit.hour = 0;
 
     getline(fichierLog, garbage, ':');
+    // On verifie que la ligne n'est pas vide
+    // si c'est le cas, on est alors en fin de fichier.
     if (garbage == "")
     {
         // fin de fichier
@@ -48,17 +46,17 @@ ifstream &operator>>(ifstream &fichierLog, Hit &unHit)
 
     getline(fichierLog, hourAsString, ':');
 
-    unHit.hour = (unsigned int)App::Atoi(hourAsString.c_str()); // on est sur que si on arrive à ce stade que le resultat de Atoi n'est pas -1
-    // car on a verifie juste avant que la ligne n'est pas vide (dans la condition de vérification de garbage)
+    // on est sûr que la chaîne contient un nombre (hypothèse du sujet)
+    unHit.hour = atoi(hourAsString.c_str());
 
     getline(fichierLog, garbage, ' ');
     getline(fichierLog, garbage, ' ');
     getline(fichierLog, garbage, ' ');
-    getline(fichierLog, unHit.cible, ' ');
+    getline(fichierLog, unHit.cible, ' '); // on récupère la cible
 
     getline(fichierLog, garbage, ' ');
     getline(fichierLog, garbage, '"');
-    getline(fichierLog, unHit.referer, '"');
+    getline(fichierLog, unHit.referer, '"'); // on récupère le referer
 
     // on ignore le reste de la ligne jusqu'à la fin de ligne
     getline(fichierLog, garbage);

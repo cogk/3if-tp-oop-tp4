@@ -23,7 +23,6 @@ using namespace std;
 #include "Cible.h"
 
 //------------------------------------------------------------- Constantes
-const std::vector<std::string> extensions = {".jpg", ".png", ".bmp",".css", ".js"};
 
 //------------------------------------------------------------------ Types
 typedef std::map<string, Cible *> Cibles;
@@ -43,20 +42,55 @@ public:
     // Mode d'emploi :
     // Cette méthode est le point d'entrée dans le programme
     // Elle renvoie le code de retour du programme, qui est :
-    //   * 0 s'il n'y a pas eu d'erreur
-    //   * 1 s'il y a eu une erreur fatale
+    //   * EXIT_SUCCESS s'il n'y a pas eu d'erreur
+    //   * EXIT_FAILURE s'il y a eu une erreur fatale
     // Contrat :
-    // La valeur de retour est soit 0 soit 1.
-    int Run();
+    // La valeur de retour est soit EXIT_SUCCESS soit EXIT_FAILURE.
+    int Run(int argc, char const *argv[]);
 
-    // renvoie status FAILURE ou SUCCESS
-    int ReadOptions(int argc, char const *argv[]);
+    App();
 
-    void ShowStatistics() const;
+    ~App();
 
-    int WriteDotGraph() const;
+protected:
+    //----------------------------------------------------- Méthodes protégées
+    // Mode d'emploi :
+    // affiche le message d'usage du programme sur la sortie standard
+    static void usage();
 
-    bool EndsWith(string toStudy);
+    // Mode d'emploi :
+    // Analyse une chaine de caractères et retourne la valeur numérique
+    // du nombre entier positif qui s'y trouve potentiellemnt.
+    // Retourne -1 si la chaine n'est pas dans le bon format.
+    static int atoi(const char *str);
+
+    // Mode d'emploi :
+    // Lit les hits du fichier {options.inputFilename}
+    // dans la map Cibles.
+    void readFromFile(ifstream &logfile);
+
+    // Mode d'emploi :
+    // Renvoie TRUE si la chaine se termine par une extension filtrées
+    // Renvoie FALSE sinon
+    bool endsWithFilteredExtension(string filename) const;
+
+    // Mode d'emploi :
+    // Cette méthode analyse les paramètres donnés en ligne de commande
+    // Elle renvoie le code de retour du programme, qui est :
+    //   * EXIT_SUCCESS s'il n'y a pas eu d'erreur
+    //   * EXIT_FAILURE s'il y a eu une erreur
+    // Contrat :
+    // La valeur de retour est soit 0 soit EXIT_FAILURE.
+    int readOptions(int argc, char const *argv[]);
+
+    // Mode d'emploi :
+    // Affiche les N={options.topStatsCount} meilleures cibles.
+    void showStatistics() const;
+
+    // Mode d'emploi :
+    // Écrit dans le fichier {options.outputDotFilename} le graphe
+    // de toutes les cibles et leurs referers.
+    int writeDotGraph() const;
 
     struct Options
     {
@@ -73,27 +107,13 @@ public:
         string serverReferer = "http://intranet-if.insa-lyon.fr";
 
         unsigned int topStatsCount = 10;
+
+        std::vector<std::string> filteredExtensions = {".jpg", ".png", ".bmp", ".css", ".js"};
     };
-
-    static int Atoi(const char *str);
-
-    App();
-
-    ~App();
-
-protected:
-    //----------------------------------------------------- Méthodes protégées
-    static void usage();
-
-    void Debug() const;
-
-    void readFromFile(ifstream &logfile);
 
     //----------------------------------------------------- Attributs protégés
     Options options;
     Cibles cibles;
-
-
 };
 
 //-------------------------------- Autres définitions dépendantes de <App>

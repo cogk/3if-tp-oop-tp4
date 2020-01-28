@@ -25,15 +25,25 @@ using namespace std;
 #include "Hit.h"
 
 //------------------------------------------------------------- Constantes
-const string PROG_NAME = "analog"; //nom de l'executable
+const string PROG_NAME = "analog"; // nom de l'executable
 
 //----------------------------------------------------------------- PUBLIC
 
 //----------------------------------------------------- Méthodes publiques
-int App::Run()
+int App::Run(int argc, char const *argv[])
+// Algorithme :
+// Lire les arguments en ligne de commande
+// Ouvrir le fichier d'entrée
+//
+//
 {
+    const int optionsReadingStatus = readOptions(argc, argv);
+    if (optionsReadingStatus == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
 
-    ifstream logfile(options.inputFilename); // ouverture du fichier
+    ifstream logfile(options.inputFilename);
     if (logfile.fail()) // si le fichier ne s'ouvre pas correctement
     {
         cerr << "Erreur: impossible d'ouvrir le fichier d'entrée." << endl;
@@ -49,33 +59,55 @@ int App::Run()
         cout << "Warning: only hits between " << options.filterTime << "h and " << (options.filterTime + 1) << "h have been taken into account" << endl;
     }
 
-
-    if (options.shouldOutputDot) //génération du fichier .dot si demandé
+    if (options.shouldOutputDot) // génération du fichier .dot si demandé
     {
-        if (WriteDotGraph() == EXIT_FAILURE)
+        if (writeDotGraph() == EXIT_FAILURE)
         {
+            // En cas d'erreur, on interrompt l'exécution du programme
             return EXIT_FAILURE;
         }
     }
 
-    ShowStatistics(); //Appel à la méthode qui Affiche les 10 documents les plus consultés
+    showStatistics();
 
     // on détruit les cibles car c'est la fin du programme, on ne les utilise plus
     Cibles::iterator it = cibles.begin();
     const Cibles::iterator end = cibles.end();
     while (it != end)
     {
-      delete it->second;
-      it++;
+        delete it->second;
+        it++;
     }
 
     return EXIT_SUCCESS;
 } //----- Fin de App::Run
 
-int App::WriteDotGraph() const
+int App::writeDotGraph() const
+// Algorithme :
+// On ouvre le fichier de sortie.
+// On y écrit l'en-tête “digraph {”
+// Pour chaque Cible :
+//      Si le nœud de même nom n'a pas déjà été créé, alors :
+//          On crée un nœud. On écrit ce nœud dans le fichier de sortie
+//          On enregistre le nom du nouveau nœud dans une variable $nom
+//      Sinon :
+//          On récupère le nom de l'ancien nœud dans une variable $nom
+//      Fin Si
+//
+//      Pour chaque referer de la cible :
+//          Si le nœud de même nom n'a pas déjà été créé, alors :
+//              On crée un nœud. On écrit ce nœud dans le fichier de sortie
+//              On enregistre le nom du nouveau nœud dans une variable $nom
+//          Sinon :
+//              On récupère le nom de l'ancien nœud dans une variable $nom
+//          Fin Si
+//          On écrit dans le fichier la liaison entre les deux nœud.
+//      Fin Pour
+// Fin Pour
+// On écrit la fin “}” dans le fichier.
 {
-    ofstream dotfile(options.outputDotFilename); //fichier de sortie
-    if (dotfile.fail()) // si le fichier ne s'ouvre pas bien
+    ofstream dotfile(options.outputDotFilename);
+    if (dotfile.fail()) // si le fichier ne s'ouvre pas correctement
     {
         cerr << "Erreur: impossible d'ouvrir le fichier de sortie." << endl;
         return EXIT_FAILURE;
@@ -97,7 +129,7 @@ int App::WriteDotGraph() const
 
         string nodeName1;
 
-        //on vérifie si un noeud a déjà été constitué par la cible en cours
+        // on vérifie si un noeud a déjà été constitué par la cible en cours
         const NodeMap::const_iterator cibleToNodeName = mapCibleToNodeName.find(cibleName);
         if (cibleToNodeName == mapCibleToNodeName.end())
         {
@@ -109,11 +141,11 @@ int App::WriteDotGraph() const
         }
         else
         {
-          //sinon on travaille avec le nom de noeud déjà existant pour cette cible
+            // sinon on travaille avec le nom de noeud déjà existant pour cette cible
             nodeName1 = cibleToNodeName->second;
         }
 
-        // on parcours les referer de la cible etudie
+        // on parcourt les referer de la cible etudiée
         CibleReferersMap::const_iterator it2 = refs.begin();
         const CibleReferersMap::const_iterator end2 = refs.end();
         while (it2 != end2)
@@ -136,7 +168,7 @@ int App::WriteDotGraph() const
             }
             else
             {
-              //sinon on travaille avec le nom de noeud déjà donné pour ce referer
+                //sinon on travaille avec le nom de noeud déjà donné pour ce referer
                 nodeName2 = cibleToNodeName->second;
             }
 
@@ -154,14 +186,20 @@ int App::WriteDotGraph() const
     return EXIT_SUCCESS;
 }
 
-void App::ShowStatistics() const
+void App::showStatistics() const
+// Algorithme :
+// On crée une map de clé “nombre total de hits”, et de valeur : la Cible.
+// On itère la map dans le sens inverse (donc décroissant selon la clé) :
+//      On affiche la valeur.
+//      Si on a itéré 10 fois, on quitte la boucle.
+// Fin Itération
 {
     // une multimap pour permettre les doublons sur les nombres de hits total qui est clé
     // on utilise la fonction compare std::greater pour classer par ordre décroissant,
     // on garde l'allocator, car on ne s'en sert pas
     // std::multimap<unsigned int, Cible*> ciblesMap;
 
-    std::multimap<unsigned int, Cible *, std::greater<unsigned int>> ciblesMap;
+    std::multimap<unsigned int, Cible *> ciblesMap;
 
     Cibles::const_iterator it = cibles.begin();
     Cibles::const_iterator end = cibles.end();
@@ -172,31 +210,58 @@ void App::ShowStatistics() const
         it++;
     }
 
-    std::multimap<unsigned int, Cible *>::iterator itMap = ciblesMap.begin();
-    std::multimap<unsigned int, Cible *>::iterator endMap = ciblesMap.end();
+    std::multimap<unsigned int, Cible *>::const_reverse_iterator itMap = ciblesMap.rbegin();
+    std::multimap<unsigned int, Cible *>::const_reverse_iterator endMap = ciblesMap.rend();
 
-    // check obligatoire pour vérifier que l'on a au moins 10 cibles, car si on utilise un next
-    // 10 éléments après et qu'il y en a moins que dix, cela résulte en undefined behavior
-    if (distance(itMap, ciblesMap.end()) > options.topStatsCount)
-    {
-        endMap = next(ciblesMap.begin(), options.topStatsCount);
-    }
-
-    while (itMap != endMap) // affichage d'au plus 10 documents les plus consultés
+    // affichage d'au plus 10 documents les plus consultés
+    unsigned int i = 0;
+    while (itMap != endMap && i < options.topStatsCount)
     {
         cout << itMap->second->nomCible << " "
              << "(" << itMap->first << " hits)" << endl;
         itMap++;
+        i++;
     }
 }
 
 // méthode qui permet d'analyser le fichier
 void App::readFromFile(ifstream &logfile)
+// Algorithme :
+// Tant que l'on a pas atteint la fin du fichier :
+//      On lit un hit
+//      Si le hit est invalide (c'est à dire qu'on est à la fin du fichier)
+//          Alors on quitte la boucle.
+//      Fin Si
+//
+//      Si l'option d'exclusion d'images/CSS/JS est activée
+//          Si la cible ou le referer se termine par l'extension correspondante
+//              Alors on passe à la prochaine ligne
+//          Fin Si
+//      Fin Si
+//
+//      Si l'option d'exclusion selon l'heure du hit est activée
+//          Si l'heure du hit n'est pas comprise dans le bon intervalle
+//              Alors on passe à la prochaine ligne
+//          Fin Si
+//      Fin Si
+//
+//      Si le referer du hit commence par le referer local
+//          Alors on supprime le début du referer du hit
+//          (c'est à dire on retire le referer local du referer du hit)
+//      Fin Si
+//
+//      Si la cible n'existe pas dans la liste des cibles
+//          Alors on l'ahjute à la liste des cibles
+//      Fin Si
+//
+//      Dans tous les cas, on incrémente le nombre de hits total la cible
+//      Et on incrémente le nombre de hits de la liaison referer -> cible
+// Fin Tant que
+//
 {
     const string LOCAL_ADDRESS = options.serverReferer;
     Hit newHit;
 
-    // on ajoute les hits à notre priority queue
     while (!logfile.eof())
     {
         logfile >> newHit; // lecture du hit grace à la surcharge d'opérateur >>
@@ -208,10 +273,13 @@ void App::readFromFile(ifstream &logfile)
 
         if (options.shouldExcludeOthers)
         {
-            if (EndsWith(newHit.referer) || EndsWith(newHit.cible)) //on vérifie si la cible ou le referer
-            //ne sont pas du type souhaité, c'est à dire ont une extensions indésirable
+            // On détermine si la cible est une ressource image/CSS/JS, …
+            // En pratique, on a seulement besoin de vérifier la cible car le referer
+            // sera toujours une page HTML.
+            if (endsWithFilteredExtension(newHit.cible))
             {
-                continue; // on n'ajoute pas le hit si la cible ou le referer a pour extension celles refusées
+                // Le fichier n'est pas du type souhaité
+                continue; // on n'ajoute pas le hit
             }
         }
 
@@ -219,7 +287,7 @@ void App::readFromFile(ifstream &logfile)
         {
             if (newHit.hour != options.filterTime)
             {
-                continue; // on n'ajoute pas le hit s'il a été effectué à une autre heure que celle voulue
+                continue; // on n'ajoute pas le hit s'il est d'une autre heure que celle désirée
             }
         }
 
@@ -242,7 +310,7 @@ void App::readFromFile(ifstream &logfile)
         }
         else
         {
-            //sinon on créer une nouvelle cible et on l'ajoute à la map
+            // sinon on crée une nouvelle cible et on l'ajoute à la map
             value = new Cible(key);
             cibles.insert(CiblesContainerPair(key, value));
         }
@@ -254,25 +322,49 @@ void App::readFromFile(ifstream &logfile)
     }
 }
 
-bool App::EndsWith(string toStudy)
+bool App::endsWithFilteredExtension(string filename) const
+// Algorithme :
+// Pour toutes les extensions filtrées
+//      Si le nom en paramètre se termine par l'extension
+//          Alors on retourne VRAI
+//      Fin Si
+// Fin Pour
+// On retourne FAUX
 {
-  //on vérifie si la chaine de caractère paramètre effectif a pour terminaison l'une des extensions interdites
-    for (unsigned int i = 0; i < extensions.size(); i++)
+    // on vérifie si la chaine de caractère paramètre effectif a pour terminaison l'une des extensions interdites
+    const std::vector<std::string> exts = options.filteredExtensions;
+    for (unsigned int i = 0; i < exts.size(); i++)
     {
-        if (toStudy.find(extensions[i]) == (toStudy.length() - extensions[i].length()))
+        if (filename.find(exts[i]) == (filename.length() - exts[i].length()))
+        {
             return true;
+        }
     }
     return false;
 }
 
 void App::usage()
+// Affiche le message d'usage
 {
     cerr << "Usage: " << PROG_NAME << " [-e] [-t 0-23] [-g out.dot] in.log" << endl;
 }
 
-int App::Atoi(const char *str)
+int App::atoi(const char *str)
+// Algorithme :
+// (Méthode peu robuste pour convertir char* en entier.)
+// SORTIE : l'entier N, positif ou nul si la conversion est réussie.
+//          sinon -1 en cas d'erreur
+// Pour chaque caractère C de la chaîne de caractère
+//      Si C n'est pas un chiffre, on retourne -1 (fin de la boucle et de la fonction).
+//
+//      Donner à X la valeur entière entre 0 et 9 associée au caractère C
+//        où '0' => 0, ..., '9' => 9 (abstrait, concrètement on utilise
+//        les valeurs ASCII des caractères).
+//      Donner à N la valeur N * 10 + X
+// Fin Pour
+// Renvoyer N (il n'y a pas eu de valeur invalide)
 {
-  // la méthode convertie une chaine de caractère en entier qu'elle retourne
+    // la méthode convertie une chaine de caractère en entier qu'elle retourne
     int num = 0;
 
     if (str[0] == '\0')
@@ -296,24 +388,24 @@ int App::Atoi(const char *str)
     return num;
 }
 
-void App::Debug() const
-{
-  //on affiche sur la sortie standard le récapitulatif des options choisie
-  // méthode utile pour vérifier la bonne interprétation des options en ligne de commande
-    cout << "inputFilename:       " << options.inputFilename << endl;
+// void App::Debug() const
+// {
+//     // on affiche sur la sortie standard le récapitulatif des options choisie
+//     // méthode utile pour vérifier la bonne interprétation des options en ligne de commande
+//     cout << "inputFilename:       " << options.inputFilename << endl;
 
-    cout << "shouldFilterByTime:  " << (options.shouldFilterByTime ? "true" : "false") << endl;
-    cout << "filterTime:          " << options.filterTime << endl;
+//     cout << "shouldFilterByTime:  " << (options.shouldFilterByTime ? "true" : "false") << endl;
+//     cout << "filterTime:          " << options.filterTime << endl;
 
-    cout << "shouldOutputDot:     " << (options.shouldOutputDot ? "true" : "false") << endl;
-    cout << "outputDotFilename:   " << options.outputDotFilename << endl;
+//     cout << "shouldOutputDot:     " << (options.shouldOutputDot ? "true" : "false") << endl;
+//     cout << "outputDotFilename:   " << options.outputDotFilename << endl;
 
-    cout << "shouldExcludeOthers: " << (options.shouldExcludeOthers ? "true" : "false") << endl;
+//     cout << "shouldExcludeOthers: " << (options.shouldExcludeOthers ? "true" : "false") << endl;
 
-    cout << "serverReferer:       " << options.serverReferer << endl;
-}
+//     cout << "serverReferer:       " << options.serverReferer << endl;
+// }
 
-int App::ReadOptions(int argc, char const *argv[])
+int App::readOptions(int argc, char const *argv[])
 {
     if (argc == 1)
     {
@@ -324,7 +416,7 @@ int App::ReadOptions(int argc, char const *argv[])
     int i = 1;
     while (i < argc)
     {
-      //traitment de l'option "-g"
+        //traitment de l'option "-g"
         if (!strcmp(argv[i], "-g"))
         {
             if (i == argc - 1)
@@ -356,7 +448,7 @@ int App::ReadOptions(int argc, char const *argv[])
 
             // On ignore les options répétées, seule la dernière valeur est prise en compte.
             i++;
-            int hour = App::Atoi(argv[i]);
+            int hour = App::atoi(argv[i]);
             if (hour > 23 || hour < 0)
             {
                 cerr << "Erreur: paramètre ‘heure’ de l'option -t"
@@ -371,7 +463,7 @@ int App::ReadOptions(int argc, char const *argv[])
 
         //possibilité d'évolution ci-dessous en commentaire : ajout de l'option pour que
         //l'utilisateur fournisse l'adresse locale
-      /*  else if (!strcmp(argv[i], "-R"))
+        /*  else if (!strcmp(argv[i], "-R"))
         {
             // On ignore les options répétées, seule la dernière valeur est prise en compte.
             options.serverReferer = argv[i];

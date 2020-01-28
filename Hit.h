@@ -31,7 +31,6 @@ class Hit
     //----------------------------------------------------------------- PUBLIC
 public:
 
-
     //----------------------------------------------------- Méthodes publiques
     // type Méthode ( liste des paramètres );
     // Mode d'emploi :

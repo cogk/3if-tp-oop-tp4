@@ -3,12 +3,6 @@
 int main(int argc, char const *argv[])
 {
     App app; // allocation sur la pile
-    const int err1 = app.ReadOptions(argc, argv);
-    if (err1)
-    {
-        return err1;
-    }
-
-    const int err2 = app.Run();
-    return err2;
+    const int status = app.Run(argc, argv);
+    return status;
 }

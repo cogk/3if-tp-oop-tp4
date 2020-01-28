@@ -25,26 +25,36 @@ using namespace std;
 //----------------------------------------------------- Méthodes publiques
 void Cible::Increment(string referer)
 // Algorithme :
+// Incrémenter le nombre de hits total de la cible.
 //
+// Trouver le referer qui porte le nom donné en paramètre.
+// Si ce referer existe, alors on incrémente le nombre de hits entre
+//   le referer et la cible.
+// Sinon, on ajoute un nouveau referer dans la liste des referers
+//   de la cible (en n'oubliant pas de compter 1 hit entre la cible
+//   et le referer).
 {
-  //on augmente le nombre de Hit total de la cible
+    // on incrémente le nombre de Hits total de la cible
     nbHitsTotal++;
 
-    // on vérifie si le referer est déjà repertorié
+    // on récupère le referer (s'il est déjà repertorié)
     CibleReferersMap::iterator it = referers.find(referer);
-    if (it != referers.end()) // si on n'est pas arrivé au bout c'est à dire le referer existe, on incrémente la liaison
-    //referer -> cible
+
+    if (it != referers.end())
     {
+        // si le referer existe, on incrémente le nombre
+        // de hits de la liaison referer -> cible
         it->second++;
     }
-    else // sinon on créer le referer
+    else
     {
+        // sinon on crée le referer
         referers.insert(pair<string, unsigned int>(referer, 1));
     }
-
 } //----- Fin de Increment
 
 unsigned int Cible::GetCount()
+// Accesseur public de nbHitsTotal (privée)
 {
     return nbHitsTotal;
 }
@@ -60,7 +70,11 @@ bool operator<(const Cible &cible1, const Cible &cible2)
 //-------------------------------------------- Constructeurs - destructeur
 Cible::Cible(string cible) : nomCible(cible), nbHitsTotal(0), referers()
 // Algorithme :
-//
+// Affecter à nomCible le nom de cette cible, donné en paramètre
+//   au constructeur.
+// Affecter au nombre total de hits la valeur 0.
+// Initialiser la structure de donnée, initialement vide, qui regroupe
+//   tous les referers et leurs nombres de hits spécifiques.
 {
 #ifdef MAP
     cout << "Appel au constructeur de <Cible>" << endl;
@@ -68,8 +82,6 @@ Cible::Cible(string cible) : nomCible(cible), nbHitsTotal(0), referers()
 } //----- Fin de Cible
 
 Cible::~Cible()
-// Algorithme :
-//
 {
 #ifdef MAP
     cout << "Appel au destructeur de <Cible>" << endl;
