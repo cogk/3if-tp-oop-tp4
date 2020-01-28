@@ -1,0 +1,47 @@
+.Dd 26 Janvier 2020
+.Dt ANALOG 1
+.Os
+.Sh NOM
+.Nm analog
+.Nd analyse de log Apache
+.Sh SYNOPSIS
+.Nm analog
+.Op Fl e
+.Op Fl t Ar heure
+.Op Fl g Ar output.dot
+.Ar input.log
+.Sh DESCRIPTION
+Affiche des statistiques et produit des graphiques utiles pour l'analyse du trafic sur un serveur a partir de logs Apache. Differentes options de filtrage sont disponibles.  Les statistiques des 10 ressources les plus demandees sont affichees.
+.Sh OPTIONS
+Les options suivantes sont disponibles :
+.Bl -tag -width indent
+.It Fl e
+Exclut les documents de type image (jpg, png, ...), CSS, et JavaScript.
+.It Fl t
+Exclus tous les hits qui ne sont pas dans le creneau horaire specifie
+[
+.Ar heure
+;
+.Ar heure
++ 1[.
+L'argument
+.Ar heure
+doit etre un entier compris entre 0 et 23 inclus.
+.It Fl g
+Produit un fichier de graphe GraphViz enregistre au chemin specifie dans
+.Ar output.dot
+de toutes les ressources.
+.El
+.Sh VALEURS DE RETOUR
+Le programme
+.Nm
+retourne les valeurs suivantes
+a la fin de son execution :
+.Bl -tag -width indent
+.It 0
+l'execution s'est deroulee normalement.
+.It 1
+le programme a rencontre une erreur (acces fichier, ...).
+.El
+.Sh AUTEURS
+Ecrit par Zineb Fadili et Corentin Forler
