@@ -6,9 +6,9 @@ SYNOPSIS
 
 DESCRIPTION
      Affiche des statistiques et produit des graphiques utiles pour l'analyse
-     du trafic sur un serveur a partir de logs Apache. Differentes options de
+     du trafic sur un serveur à partir de logs Apache. Différentes options de
      filtrage sont disponibles.  Les statistiques des 10 ressources les plus
-     demandees sont affichees.
+     demandées sont affichées.
 
 OPTIONS
      Les options suivantes sont disponibles :
@@ -16,21 +16,21 @@ OPTIONS
      -e      Exclut les documents de type image (jpg, png, ...), CSS, et
              JavaScript.
 
-     -t      Exclus tous les hits qui ne sont pas dans le creneau horaire
-             specifie [ heure ; heure + 1[.  L'argument heure doit etre un
+     -t      Exclut tous les hits qui ne sont pas dans le créneau horaire
+             specifié [ heure ; heure + 1[.  L'argument heure doit être un
              entier compris entre 0 et 23 inclus.
 
-     -g      Produit un fichier de graphe GraphViz enregistre au chemin speci-
-             fie dans output.dot de toutes les ressources.
+     -g      Produit un fichier de graphe GraphViz enregistré au chemin speci-
+             fié dans output.dot de toutes les ressources.
 
 VALEURS DE RETOUR
-     Le programme analog retourne les valeurs suivantes a la fin de son execu-
+     Le programme analog retourne les valeurs suivantes à la fin de son exécu-
      tion :
 
-     0       l'execution s'est deroulee normalement.
+     0       l'exécution s'est deroulée normalement.
 
-     1       le programme a rencontre une erreur (acces fichier, ...).
+     1       le programme a rencontré une erreur (accès fichier, ...).
 
 AUTEURS
-     Ecrit par Zineb Fadili et Corentin Forler
+     Écrit par Zineb Fadili et Corentin Forler
 
