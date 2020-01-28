@@ -63,13 +63,12 @@ public:
     // car la copie en profondeur est très coûteuse.
 
     Cible(string cible);
-    // Contrat :
+    // Mode d'emploi :
+    // construit un objet Cible dont la valeur de la propriété nomCible
+    // est donnée en paramètre. Initialise la propriété nbHitsTotal à 0.
+    // Crée une map `referers` vide.
 
     virtual ~Cible();
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
 
     //------------------------------------------------------------------ PRIVE
 

@@ -33,11 +33,6 @@ class Hit
     //----------------------------------------------------------------- PUBLIC
 public:
     //----------------------------------------------------- Méthodes publiques
-    // type Méthode ( liste des paramètres );
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
     friend class App;
 
     //------------------------------------------------- Surcharge d'opérateurs
@@ -48,19 +43,15 @@ public:
 
     //-------------------------------------------- Constructeurs - destructeur
     Hit(const Hit &unHit) = delete;
-    // Pas de constructeur de copie
+    // Pas de constructeur de copie, inutile
 
     Hit();
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
+    // Constructeur vide, les propriétés sont initialisées à :
+    // - cible : chaîne vide
+    // - referer : chaîne vide
+    // - hour : 0
 
     virtual ~Hit();
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
 
     //------------------------------------------------------------------ PRIVE
 
