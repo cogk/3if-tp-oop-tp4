@@ -19,9 +19,16 @@ normal: directories $(EXEC_NAME)
 # On recompile tout
 all: clean normal
 
+# Cible de test
+test: clean normal
+	cd Tests/ && bash ./mktest.sh
+
+# alias
+tests: test
+
 # Permet d'éviter que les fichiers du même nom que des règles
 # soient "interprétés" comme des dépendances.
-.PHONY: clean all normal
+.PHONY: clean all normal test
 
 # On supprime les fichiers temporaires et l'éxécutable
 clean:
