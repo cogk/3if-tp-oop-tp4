@@ -39,3 +39,5 @@ Tests/template
 results.csv
 /*.dot
 /*.png
+/*.pdf
+/*.docx
