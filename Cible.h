@@ -45,28 +45,10 @@ public:
     // Contrat :
     //
 
-    struct ComparePointers
-    {
-        bool operator()(const Cible *lhs, const Cible *rhs) const
-        {
-            return *lhs < *rhs;
-        }
-    };
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
-    friend class App;
     //------------------------------------------------- Surcharge d'opérateurs
     Cible &operator=(const Cible &unCible) = delete;
     // On ne souhaite pas d'opérateur de copie
     // car la copie en profondeur est très coûteuse.
-
-    friend bool operator<(const Cible &cible1, const Cible &cible2);
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
 
     //-------------------------------------------- Constructeurs - destructeur
     Cible(const Cible &unCible) = delete;

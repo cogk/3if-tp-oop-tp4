@@ -60,12 +60,6 @@ unsigned int Cible::GetCount()
 }
 
 //------------------------------------------------- Surcharge d'opérateurs
-// Définition d'un opérateur de comparaison pour le tri
-// pour les ordonner selon le nombre de hits
-bool operator<(const Cible &cible1, const Cible &cible2)
-{
-    return cible1.nbHitsTotal < cible2.nbHitsTotal;
-}
 
 //-------------------------------------------- Constructeurs - destructeur
 Cible::Cible(string cible) : nomCible(cible), nbHitsTotal(0), referers()
