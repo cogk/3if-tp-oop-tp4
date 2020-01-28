@@ -388,23 +388,6 @@ int App::atoi(const char *str)
     return num;
 }
 
-// void App::Debug() const
-// {
-//     // on affiche sur la sortie standard le récapitulatif des options choisie
-//     // méthode utile pour vérifier la bonne interprétation des options en ligne de commande
-//     cout << "inputFilename:       " << options.inputFilename << endl;
-
-//     cout << "shouldFilterByTime:  " << (options.shouldFilterByTime ? "true" : "false") << endl;
-//     cout << "filterTime:          " << options.filterTime << endl;
-
-//     cout << "shouldOutputDot:     " << (options.shouldOutputDot ? "true" : "false") << endl;
-//     cout << "outputDotFilename:   " << options.outputDotFilename << endl;
-
-//     cout << "shouldExcludeOthers: " << (options.shouldExcludeOthers ? "true" : "false") << endl;
-
-//     cout << "serverReferer:       " << options.serverReferer << endl;
-// }
-
 int App::readOptions(int argc, char const *argv[])
 {
     if (argc == 1)
